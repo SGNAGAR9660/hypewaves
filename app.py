@@ -1,0 +1,128 @@
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+import mysql.connector
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+# MySQL connection
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Sparsh@9660",
+    database="trendpulse"
+)
+
+@app.route('/')
+def home():
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles')
+    articles = cursor.fetchall()
+    return render_template('index.html', articles=articles)
+
+@app.route('/tech')
+def tech():
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category="tech"')
+    articles = cursor.fetchall()
+    return render_template('tech.html', articles=articles)
+
+@app.route('/ai')
+def ai():
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category="ai"')
+    articles = cursor.fetchall()
+    return render_template('ai.html', articles=articles)
+
+@app.route('/entertainment')
+def entertainment():
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category="entertainment"')
+    articles = cursor.fetchall()
+    return render_template('entertainment.html', articles=articles)
+
+@app.route('/news')
+def news():
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category="news"')
+    articles = cursor.fetchall()
+    return render_template('news.html', articles=articles)
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if username == 'admin' and password == 'admin@123':
+            session['admin_logged_in'] = True
+            flash('Login Successful!', 'success')
+            return redirect(url_for('dashboard'))
+        else:
+            error = 'Invalid Credentials. Please try again.'
+
+    return render_template('admin_login.html', error=error)
+
+@app.route('/dashboard')
+def dashboard():
+    if 'admin_logged_in' not in session:
+        return redirect(url_for('admin_login'))
+    return render_template('dashboard.html')
+
+@app.route('/add_article', methods=['GET', 'POST'])
+def add_article():
+    if 'admin_logged_in' not in session:
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        category = request.form['category']
+        image_url = request.form['image_url']
+
+        try:
+            cursor = db.cursor()
+            cursor.execute('INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)', 
+                           (title, content, category, image_url))
+            db.commit()
+            flash('Article added successfully!', 'success')
+            return redirect(url_for('dashboard'))
+        except Exception as e:
+            db.rollback()
+            flash('Error adding article.', 'danger')
+            print(e)
+
+    return render_template('add_article.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('admin_logged_in', None)
+    flash('Logged out successfully!', 'info')
+    return redirect(url_for('admin_login'))
+
+@app.route('/article/<int:article_id>')
+def article_detail(article_id):
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles WHERE id = %s', (article_id,))
+    article = cursor.fetchone()
+    if article:
+        return render_template('article_detail.html', article=article)
+    else:
+        return render_template('404.html'), 404
+
+@app.route('/all_articles')
+def all_articles():
+    if 'admin_logged_in' not in session:
+        return redirect(url_for('admin_login'))
+    cursor = db.cursor()
+    cursor.execute('SELECT * FROM articles')
+    articles = cursor.fetchall()
+    return render_template('all_articles.html', articles=articles)
+
+# 404 Error Handler
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+if __name__ == "__main__":
+    app.run(debug=True)

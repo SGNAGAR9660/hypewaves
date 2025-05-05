@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}All Articles{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4 text-white">All Articles</h2>
+    <div class="list-group">
+        {% for article in articles %}
+            <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="list-group-item list-group-item-action bg-dark text-white mb-2 border border-secondary">
+                <h5 class="mb-1">{{ article[1] }}</h5>
+                <p class="mb-1">{{ article[2][:100] }}...</p>
+                <small class="text-muted">{{ article[5] }}</small> <!-- category -->
+            </a>
+        {% else %}
+            <p class="text-muted text-center">No articles available.</p>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

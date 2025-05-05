@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Admin Dashboard</h2>
+    <div class="text-center">
+        <a href="{{ url_for('add_article') }}" class="btn btn-success">Add New Article</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Add New Article{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Add New Article</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Title:</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Content:</label>
+            <textarea name="content" class="form-control" rows="5" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Category:</label>
+            <select name="category" class="form-select" required>
+                <option value="tech">Tech</option>
+                <option value="ai">AI</option>
+                <option value="entertainment">Entertainment</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Image URL:</label>
+            <input type="text" name="image_url" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">Add Article</button>
+    </form>
+</div>
+{% endblock %}
