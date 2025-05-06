@@ -9,7 +9,7 @@ db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Sparsh@9660",
-    database="trendpulse"
+    database="hypewaves"
 )
 
 @app.route('/')
@@ -123,6 +123,24 @@ def all_articles():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+# About Us Page
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+# Contact Us Page
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # Yahan pe future mein backend email system ya db save kar sakte hain
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+        print(f"New Contact Message: {name}, {email}, {message}")  # Debug ke liye
+        flash('Message sent successfully!', 'success')
+        return redirect(url_for('contact'))
+    return render_template('contact.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

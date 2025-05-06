@@ -1,1 +1,1 @@
-console.log('TrendPulse website is working!');
+console.log('Hypewaves website is working!');

@@ -1,23 +1,46 @@
 {% extends "layout.html" %}
-{% block title %}Home - TrendPulse{% endblock %}
+
+{% block title %}Hypewaves - Home{% endblock %}
 
 {% block content %}
-<h1 class="mb-4 text-center">Latest Articles</h1>
-
 <div class="row">
-    {% for article in articles %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            {% if article[3] %}
-            <img src="{{ article[3] }}" class="card-img-top" alt="Image">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ article[1] }}</h5>
-                <p class="card-text">{{ article[2][:100] }}...</p>
-                <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-primary">Read More</a>
+    <!-- Main Articles Section -->
+    <div class="col-md-8">
+        <h2 class="mb-4">Latest Articles</h2>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card bg-dark text-light h-100">
+                    {% if article[4] %}
+                    <img src="{{ article[4] }}" class="card-img-top" alt="Article Image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article[1] }}</h5>
+                        <p class="card-text">{{ article[2][:100] }}...</p>
+                        <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
+
+    <!-- Sidebar Latest News -->
+    <div class="col-md-4">
+        <div class="card bg-dark text-light mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Latest News</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for article in articles[:5] %}
+                <li class="list-group-item bg-dark text-light">
+                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="text-light text-decoration-none">
+                        {{ article[1][:50] }}...
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}
