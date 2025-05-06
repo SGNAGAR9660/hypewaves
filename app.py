@@ -1,50 +1,58 @@
+# app.py
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import mysql.connector
+from config import get_db_connection
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# MySQL connection
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Sparsh@9660",
-    database="hypewaves"
-)
-
 @app.route('/')
 def home():
-    cursor = db.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM articles')
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('index.html', articles=articles)
 
 @app.route('/tech')
 def tech():
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category="tech"')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category=%s', ('tech',))
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('tech.html', articles=articles)
 
 @app.route('/ai')
 def ai():
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category="ai"')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category=%s', ('ai',))
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('ai.html', articles=articles)
 
 @app.route('/entertainment')
 def entertainment():
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category="entertainment"')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category=%s', ('entertainment',))
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('entertainment.html', articles=articles)
 
 @app.route('/news')
 def news():
-    cursor = db.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category="news"')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category=%s', ('news',))
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('news.html', articles=articles)
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -53,14 +61,12 @@ def admin_login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-
         if username == 'admin' and password == 'admin@123':
             session['admin_logged_in'] = True
             flash('Login Successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
             error = 'Invalid Credentials. Please try again.'
-
     return render_template('admin_login.html', error=error)
 
 @app.route('/dashboard')
@@ -80,17 +86,21 @@ def add_article():
         category = request.form['category']
         image_url = request.form['image_url']
 
+        conn = get_db_connection()
+        cursor = conn.cursor()
         try:
-            cursor = db.cursor()
             cursor.execute('INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)', 
                            (title, content, category, image_url))
-            db.commit()
+            conn.commit()
             flash('Article added successfully!', 'success')
-            return redirect(url_for('dashboard'))
         except Exception as e:
-            db.rollback()
+            conn.rollback()
             flash('Error adding article.', 'danger')
             print(e)
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for('dashboard'))
 
     return render_template('add_article.html')
 
@@ -102,9 +112,13 @@ def logout():
 
 @app.route('/article/<int:article_id>')
 def article_detail(article_id):
-    cursor = db.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM articles WHERE id = %s', (article_id,))
     article = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
     if article:
         return render_template('article_detail.html', article=article)
     else:
@@ -114,33 +128,33 @@ def article_detail(article_id):
 def all_articles():
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
-    cursor = db.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
     cursor.execute('SELECT * FROM articles')
     articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return render_template('all_articles.html', articles=articles)
 
-# 404 Error Handler
+# 404 Error
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
-# About Us Page
+
 @app.route('/about')
 def about():
     return render_template('about.html')
 
-# Contact Us Page
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # Yahan pe future mein backend email system ya db save kar sakte hain
         name = request.form['name']
         email = request.form['email']
         message = request.form['message']
-        print(f"New Contact Message: {name}, {email}, {message}")  # Debug ke liye
+        print(f"New Contact Message: {name}, {email}, {message}")
         flash('Message sent successfully!', 'success')
         return redirect(url_for('contact'))
     return render_template('contact.html')
-
 
 if __name__ == "__main__":
     app.run(debug=True)
