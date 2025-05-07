@@ -5,29 +5,24 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="text-center mb-4">Contact Us</h1>
-    <p class="text-center">Have a question, feedback, or a collaboration idea? We'd love to hear from you!</p>
+    <p class="text-center">Have a query, feedback, or collaboration idea? We'd love to hear from you!</p>
 
     <form method="POST" class="mt-4">
         <div class="mb-3">
-            <label for="name" class="form-label">Name:</label>
+            <label for="name" class="form-label">Your Name</label>
             <input type="text" class="form-control" name="name" required>
         </div>
-        
         <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
+            <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" name="email" required>
         </div>
-
         <div class="mb-3">
-            <label for="message" class="form-label">Message:</label>
+            <label for="message" class="form-label">Message</label>
             <textarea class="form-control" name="message" rows="5" required></textarea>
         </div>
-
-        <button type="submit" class="btn btn-success">Send Message</button>
+        <button type="submit" class="btn btn-primary">Send Message</button>
     </form>
 
-    <div class="text-center mt-5">
-        <a href="/" class="btn btn-primary">Back to Home</a>
-    </div>
+    <p class="text-center mt-5">Or reach out to us directly on Instagram, Twitter, and Facebook!</p>
 </div>
 {% endblock %}

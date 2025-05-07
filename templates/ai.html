@@ -2,22 +2,45 @@
 {% block title %}AI - Hypewaves{% endblock %}
 
 {% block content %}
-<h1 class="mb-4 text-center">AI Articles</h1>
+<h1 class="mb-4 text-center">AI Zone</h1>
 
-<div class="row">
-    {% for article in articles %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            {% if article[3] %}
-            <img src="{{ article[3] }}" class="card-img-top" alt="Image">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ article[1] }}</h5>
-                <p class="card-text">{{ article[2][:100] }}...</p>
-                <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-primary">Read More</a>
+<section class="mb-5">
+    <h2>🔥 Latest Trending AI News</h2>
+    <div class="row">
+        {% for article in latest_articles %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ article[3] }}" class="card-img-top" alt="Image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ article[1] }}</h5>
+                    <p class="card-text">{{ article[2][:100] }}...</p>
+                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-primary">Read More</a>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
+</section>
+
+<section class="mb-5">
+    <h2>📜 Old AI Archives</h2>
+    <div class="row">
+        {% for article in old_articles %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <img src="{{ article[3] }}" class="card-img-top" alt="Image">
+                <div class="card-body">
+                    <h6 class="card-title">{{ article[1][:50] }}...</h6>
+                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-primary">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="text-center mb-5">
+    <h2>🎬 Coming Soon: AI Memes & Reels</h2>
+    <p class="lead">Stay tuned for AI fun!</p>
+</section>
 {% endblock %}

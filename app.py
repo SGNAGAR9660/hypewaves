@@ -1,15 +1,28 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from config import get_db_connection
+import secrets
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = secrets.token_hex(16)  # Stronger secret key
+
+# Helper Functions
+def fetch_articles_by_category(category):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles WHERE category=%s ORDER BY id DESC LIMIT 6', (category,))
+    latest = cursor.fetchall()
+    cursor.execute('SELECT * FROM articles WHERE category=%s ORDER BY id ASC LIMIT 6', (category,))
+    old = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return latest, old
 
 @app.route('/')
 def home():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles')
+    cursor.execute('SELECT * FROM articles ORDER BY id DESC')
     articles = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -17,43 +30,23 @@ def home():
 
 @app.route('/tech')
 def tech():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category=%s', ('tech',))
-    articles = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('tech.html', articles=articles)
+    latest_articles, old_articles = fetch_articles_by_category('tech')
+    return render_template('tech.html', latest_articles=latest_articles, old_articles=old_articles)
 
 @app.route('/ai')
 def ai():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category=%s', ('ai',))
-    articles = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('ai.html', articles=articles)
+    latest_articles, old_articles = fetch_articles_by_category('ai')
+    return render_template('ai.html', latest_articles=latest_articles, old_articles=old_articles)
 
 @app.route('/entertainment')
 def entertainment():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category=%s', ('entertainment',))
-    articles = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('entertainment.html', articles=articles)
+    latest_articles, old_articles = fetch_articles_by_category('entertainment')
+    return render_template('entertainment.html', latest_articles=latest_articles, old_articles=old_articles)
 
 @app.route('/news')
 def news():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles WHERE category=%s', ('news',))
-    articles = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('news.html', articles=articles)
+    latest_articles, old_articles = fetch_articles_by_category('news')
+    return render_template('news.html', latest_articles=latest_articles, old_articles=old_articles)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
@@ -130,16 +123,11 @@ def all_articles():
         return redirect(url_for('admin_login'))
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles')
+    cursor.execute('SELECT * FROM articles ORDER BY id DESC')
     articles = cursor.fetchall()
     cursor.close()
     conn.close()
     return render_template('all_articles.html', articles=articles)
-
-# 404 Error
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
 
 @app.route('/about')
 def about():
@@ -155,6 +143,11 @@ def contact():
         flash('Message sent successfully!', 'success')
         return redirect(url_for('contact'))
     return render_template('contact.html')
+
+# 404 Error Page
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,13 +1,22 @@
 {% extends "layout.html" %}
-
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard - Hypewaves{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Admin Dashboard</h2>
-    <div class="text-center">
-        <a href="{{ url_for('add_article') }}" class="btn btn-success">Add New Article</a>
-        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+<h1 class="text-center mb-4">Admin Dashboard</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="list-group text-center">
+            <a href="{{ url_for('add_article') }}" class="list-group-item list-group-item-action bg-primary text-light mb-2">
+                ➕ Add New Article
+            </a>
+            <a href="{{ url_for('all_articles') }}" class="list-group-item list-group-item-action bg-success text-light mb-2">
+                📚 View All Articles
+            </a>
+            <a href="{{ url_for('logout') }}" class="list-group-item list-group-item-action bg-danger text-light">
+                🚪 Logout
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

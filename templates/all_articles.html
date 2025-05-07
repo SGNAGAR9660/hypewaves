@@ -1,23 +1,29 @@
 {% extends "layout.html" %}
-
-{% block title %}All Articles{% endblock %}
+{% block title %}All Articles - Hypewaves{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4 text-white">All Articles</h2>
-    <div class="list-group">
-        {% for article in articles %}
-            <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="list-group-item list-group-item-action bg-dark text-white mb-2 border border-secondary">
-                <h5 class="mb-1">{{ article[1] }}</h5>
-                <p class="mb-1">{{ article[2][:100] }}...</p>
-                <small class="text-muted">{{ article[5] }}</small> <!-- category -->
-            </a>
-        {% else %}
-            <p class="text-muted text-center">No articles available.</p>
-        {% endfor %}
-    </div>
-    <div class="text-center mt-4">
-        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
+<h1 class="text-center mb-4">All Articles</h1>
+
+<div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article[0] }}</td>
+                <td>{{ article[1][:50] }}...</td>
+                <td>{{ article[3] }}</td>
+                <td><a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-primary">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
