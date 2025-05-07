@@ -159,6 +159,14 @@ def sitemap():
     sitemap_xml = render_template('sitemap_template.xml', pages=pages, lastmod=ten_days_ago)
     response = app.response_class(sitemap_xml, mimetype='application/xml')
     return response
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+@app.route('/ads.txt')
+def ads_txt():
+    return open('static/ads.txt').read(), 200, {'Content-Type': 'text/plain'}
+
+
 
 # 404 Error Page
 @app.errorhandler(404)
