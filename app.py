@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from config import get_db_connection
 import secrets
+import datetime
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Stronger secret key
@@ -148,6 +149,16 @@ def contact():
 @app.route('/google9edf697d52ec1d5c.html')
 def google_verification():
     return send_from_directory('static', 'google9edf697d52ec1d5c.html')
+@app.route('/sitemap.xml')
+def sitemap():
+    pages = []
+    ten_days_ago = (datetime.datetime.now() - datetime.timedelta(days=10)).date().isoformat()
+    for rule in app.url_map.iter_rules():
+        if "GET" in rule.methods and len(rule.arguments) == 0:
+            pages.append(f"https://www.hypewaves.net{rule.rule}")
+    sitemap_xml = render_template('sitemap_template.xml', pages=pages, lastmod=ten_days_ago)
+    response = app.response_class(sitemap_xml, mimetype='application/xml')
+    return response
 
 # 404 Error Page
 @app.errorhandler(404)
