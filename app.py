@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from config import get_db_connection
 import secrets
 
@@ -143,6 +143,11 @@ def contact():
         flash('Message sent successfully!', 'success')
         return redirect(url_for('contact'))
     return render_template('contact.html')
+
+# Google Search Console Verification Route
+@app.route('/google9edf697d52ec1d5c.html')
+def google_verification():
+    return send_from_directory('static', 'google9edf697d52ec1d5c.html')
 
 # 404 Error Page
 @app.errorhandler(404)
