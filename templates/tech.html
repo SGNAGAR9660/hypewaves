@@ -28,7 +28,7 @@
         {% for article in old_articles %}
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <img src="{{ article[3] or 'https://via.placeholder.com/150x100' }}" class="card-img-top" alt="Image">
+                <img src="{{ article[3] }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
                 <div class="card-body">
                     <h6 class="card-title">{{ article[1][:50] }}...</h6>
                     <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-success">View</a>
