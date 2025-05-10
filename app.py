@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from config import get_db_connection
 from flask_minify import Minify
@@ -20,7 +19,7 @@ def fetch_articles_by_category(category):
     conn.close()
     return latest, old
 
-@app.route('/')
+@app.route("/")
 def home():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -82,7 +81,10 @@ def add_article():
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)', (title, content, category, image_url))
+            cursor.execute(
+                'INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)',
+                (title, content, category, image_url)
+            )
             conn.commit()
             flash('Article added successfully!', 'success')
         except Exception as e:
@@ -185,16 +187,6 @@ def videos():
     cursor.close()
     conn.close()
     return render_template('videos.html', latest_articles=videos)
-
-@app.route("/")
-def home():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles ORDER BY id DESC LIMIT 6')
-    latest_articles = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('index.html', latest_articles=latest_articles)
 
 @app.route("/homepage")
 def homepage():
