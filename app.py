@@ -188,9 +188,15 @@ def videos():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM articles ORDER BY id DESC LIMIT 6')
+    latest_articles = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('index.html', latest_articles=latest_articles)
 
-# Second one — give new endpoint name if needed
+
 @app.route("/homepage")
 def homepage():
     return render_template("homepage.html")
