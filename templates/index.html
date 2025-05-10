@@ -3,71 +3,55 @@
 
 {% block content %}
 
+<!-- Hero Section -->
+<section class="hero-section text-center py-5 bg-black">
+  <div class="container">
+    <h1 class="display-4">Welcome to Hypewaves</h1>
+    <p class="lead">Your Daily Dose of Tech, AI, News & Entertainment</p>
+    <a href="#latest-articles" class="btn btn-primary mt-3">Explore Now</a>
+  </div>
+</section>
+
 <!-- Categories Section -->
-<section class="py-5 text-center">
+<section class="py-5 text-center bg-dark text-light">
   <div class="container">
     <h2 class="mb-4">Explore Categories</h2>
     <div class="row">
+      {% for cat in ['tech', 'ai', 'entertainment', 'news'] %}
       <div class="col-md-3 mb-4">
-        <a href="/tech" class="text-decoration-none">
-          <div class="card bg-dark text-light h-100">
-            <img src="{{ url_for('static', filename='images/tech-thumbnail.png') }}" class="card-img-top" alt="Tech">
+        <a href="/{{ cat }}" class="text-decoration-none">
+          <div class="card bg-black text-light h-100">
+            <img src="{{ url_for('static', filename='images/' ~ cat ~ '-thumbnail.png') }}" class="card-img-top" alt="{{ cat | capitalize }}">
             <div class="card-body">
-              <h5 class="card-title">Tech</h5>
+              <h5 class="card-title text-capitalize">{{ cat }}</h5>
             </div>
           </div>
         </a>
       </div>
-      <div class="col-md-3 mb-4">
-        <a href="/ai" class="text-decoration-none">
-          <div class="card bg-dark text-light h-100">
-            <img src="{{ url_for('static', filename='images/ai-thumbnail.png') }}" class="card-img-top" alt="AI">
-            <div class="card-body">
-              <h5 class="card-title">AI</h5>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-3 mb-4">
-        <a href="/entertainment" class="text-decoration-none">
-          <div class="card bg-dark text-light h-100">
-            <img src="{{ url_for('static', filename='images/entertainment-thumbnail.png') }}" class="card-img-top" alt="Entertainment">
-            <div class="card-body">
-              <h5 class="card-title">Entertainment</h5>
-            </div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-3 mb-4">
-        <a href="/news" class="text-decoration-none">
-          <div class="card bg-dark text-light h-100">
-            <img src="{{ url_for('static', filename='images/news-thumbnail.png') }}" class="card-img-top" alt="News">
-            <div class="card-body">
-              <h5 class="card-title">News</h5>
-            </div>
-          </div>
-        </a>
-      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
 
 <!-- Latest Articles Section -->
-<section class="py-5">
+<section class="py-5 bg-dark text-light" id="latest-articles">
   <div class="container">
     <h2 class="mb-4 text-center">Latest Updates</h2>
     <div class="row">
       {% for article in latest_articles %}
       <div class="col-md-4 mb-4">
-        <div class="card h-100 bg-dark text-light">
+        <div class="card h-100 bg-black text-light">
           <img src="{{ article[3] or url_for('static', filename='images/default-thumbnail.png') }}" class="card-img-top" alt="News Image">
           <div class="card-body">
-            <h5 class="card-title">{{ article[1][:80] }}...</h5>
-            <a href="{{ article[2] }}" target="_blank" class="btn btn-primary mt-2">Read Full News</a>
+            <h5 class="card-title">{{ article[1][:100] }}{% if article[1]|length > 100 %}...{% endif %}</h5>
+            <a href="/article/{{ article[0] }}" class="btn btn-primary mt-2">Read Full News</a>
           </div>
         </div>
       </div>
-      
+      {% else %}
+      <div class="col-12">
+        <p class="text-center">No articles available right now. Please check back soon!</p>
+      </div>
       {% endfor %}
     </div>
   </div>
