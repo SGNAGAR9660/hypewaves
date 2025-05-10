@@ -188,8 +188,12 @@ def videos():
 
 @app.route("/")
 def home():
-    return render_template("index.html")  # index.html extends layout.html
+    return render_template("index.html")
 
+# Second one — give new endpoint name if needed
+@app.route("/homepage")
+def homepage():
+    return render_template("homepage.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
