@@ -7,7 +7,7 @@ import datetime
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
-Minify(app=app, html=True, js=True, cssless=True)
+Minify(app=app, html=True, js=True)
 
 def fetch_articles_by_category(category):
     conn = get_db_connection()
@@ -175,6 +175,17 @@ def search():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@app.route('/videos')
+def videos():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM articles WHERE category='video' ORDER BY id DESC LIMIT 30")
+    videos = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('videos.html', latest_articles=videos)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
