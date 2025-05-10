@@ -186,6 +186,10 @@ def videos():
     conn.close()
     return render_template('videos.html', latest_articles=videos)
 
+@app.route("/")
+def home():
+    return render_template("index.html")  # index.html extends layout.html
+
 
 if __name__ == "__main__":
     app.run(debug=True)
