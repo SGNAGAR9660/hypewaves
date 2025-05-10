@@ -196,7 +196,6 @@ def home():
     conn.close()
     return render_template('index.html', latest_articles=latest_articles)
 
-
 @app.route("/homepage")
 def homepage():
     return render_template("homepage.html")
