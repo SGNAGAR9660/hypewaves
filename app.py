@@ -188,9 +188,9 @@ def videos():
     conn.close()
     return render_template('videos.html', latest_articles=videos)
 
-@app.route("/homepage")
+@app.route('/homepage')
 def homepage():
-    return render_template("homepage.html")
+    return render_template('homepage.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
