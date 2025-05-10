@@ -1,16 +1,26 @@
 {% extends "layout.html" %}
+
 {% block title %}AI - Hypewaves{% endblock %}
 
+{% block head %}
+<!-- Specific Meta Tags for Tech Page -->
+<meta property="og:title" content="AI News  - Hypewaves" />
+<meta property="og:description" content="Stay updated with latest AI breakthroughs at Hypewaves." />
+<meta property="og:image" content="{{ url_for('static', filename='images/ai-thumbnail.png') }}" />
+<meta property="og:url" content="https://www.hypewaves.net/tech" />
+<meta property="og:type" content="website" />
+{% endblock %}
+
 {% block content %}
-<h1 class="mb-4 text-center">AI Zone</h1>
+<h1 class="mb-4 text-center">Ai Zone</h1>
 
 <section class="mb-5">
-    <h2>🔥 Latest Trending AI News</h2>
+    <h2>🔥 Latest AI News</h2>
     <div class="row">
         {% for article in latest_articles %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <img src="{{ article[3] }}" class="card-img-top" alt="Image">
+                <img src="{{ article[3] or url_for('static', filename='images/ai-thumbnail.png') }}" class="card-img-top" alt="{{ article[1] }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ article[1] }}</h5>
                     <p class="card-text">{{ article[2][:100] }}...</p>
@@ -23,15 +33,15 @@
 </section>
 
 <section class="mb-5">
-    <h2>📜 Old AI Archives</h2>
+    <h2>📜 Old News Archives</h2>
     <div class="row">
         {% for article in old_articles %}
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <img src="{{ article[3] }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
+                <img src="{{ article[3] or url_for('static', filename='images/tech-thumbnail.jpg') }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
                 <div class="card-body">
                     <h6 class="card-title">{{ article[1][:50] }}...</h6>
-                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-primary">View</a>
+                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-success">View</a>
                 </div>
             </div>
         </div>
@@ -40,7 +50,7 @@
 </section>
 
 <section class="text-center mb-5">
-    <h2>🎬 Coming Soon: AI Memes & Reels</h2>
-    <p class="lead">Stay tuned for AI fun!</p>
+    <h2>🎬 Coming Soon: Viral News Memes & Reels</h2>
+    <p class="lead">Stay tuned for more updates!</p>
 </section>
 {% endblock %}

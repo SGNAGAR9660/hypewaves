@@ -1,19 +1,26 @@
 {% extends "layout.html" %}
-{% block title %}Entertainment - Hypewaves{% endblock %}
+
+{% block title %}Tech News - Hypewaves{% endblock %}
+
+{% block head %}
+<!-- Specific Meta Tags for Tech Page -->
+<meta property="og:title" content="Latest Entertainment News - Hypewaves" />
+<meta property="og:description" content="Stay updated with trending entertainment updates at Hypewaves." />
+<meta property="og:image" content="{{ url_for('static', filename='images/entertainment-thumbnail.jpg') }}" />
+<meta property="og:url" content="https://www.hypewaves.net/tech" />
+<meta property="og:type" content="website" />
+{% endblock %}
 
 {% block content %}
 <h1 class="mb-4 text-center">Entertainment Zone</h1>
 
-<!-- Latest Trending Section -->
 <section class="mb-5">
-    <h2 class="mb-4">🔥 Latest Trending Entertainment</h2>
+    <h2>🔥 Latest Tech Updates</h2>
     <div class="row">
         {% for article in latest_articles %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                {% if article[3] %}
-                <img src="{{ article[3] }}" class="card-img-top" alt="Image">
-                {% endif %}
+                <img src="{{ article[3] or url_for('static', filename='images/entertainment-thumbnail.png') }}" class="card-img-top" alt="{{ article[1] }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ article[1] }}</h5>
                     <p class="card-text">{{ article[2][:100] }}...</p>
@@ -25,19 +32,16 @@
     </div>
 </section>
 
-<!-- Old Trending Archives Section -->
 <section class="mb-5">
-    <h2 class="mb-4">📜 Old Trending Archives</h2>
+    <h2>📜 Old Trending Archives</h2>
     <div class="row">
         {% for article in old_articles %}
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                {% if article[3] %}
-                <img src="{{ article[3] }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
-                {% endif %}
+                <img src="{{ article[3] or url_for('static', filename='images/tech-thumbnail.png') }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
                 <div class="card-body">
                     <h6 class="card-title">{{ article[1][:50] }}...</h6>
-                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-primary">View</a>
+                    <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-success">View</a>
                 </div>
             </div>
         </div>
@@ -45,10 +49,8 @@
     </div>
 </section>
 
-<!-- Future: Memes, Reels, Viral Videos Placeholder -->
 <section class="text-center mb-5">
-    <h2 class="mb-4">🎬 Coming Soon: Viral Memes & Reels</h2>
-    <p class="lead">Stay Tuned for the Fun Content!</p>
+    <h2>🎬 Coming Soon: Tech Reels & Memes</h2>
+    <p class="lead">Stay tuned for Tech World Fun!</p>
 </section>
-
 {% endblock %}

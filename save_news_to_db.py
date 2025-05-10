@@ -1,5 +1,5 @@
 import feedparser
-import mysql.connector
+import psycopg2
 
 # RSS feed URLs for different categories
 rss_feeds = {
@@ -9,12 +9,12 @@ rss_feeds = {
     "news": "https://news.google.com/rss/search?q=india+news&hl=en-IN&gl=IN&ceid=IN:en",
 }
 
-# MySQL connection
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Sparsh@9660",
-    database="hypewaves"
+db = psycopg2.connect(
+    host="dpg-d0cqpvadbo4c73fo4hig-a.oregon-postgres.render.com",
+    database="hypewavesdb",
+    user="hypewavesdb_user",
+    password="lOSeA01nDkFq1qUOxvBW3G4EpD7WUN9C",
+    port="5432"
 )
 
 cursor = db.cursor()

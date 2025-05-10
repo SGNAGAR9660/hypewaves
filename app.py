@@ -1,13 +1,14 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from config import get_db_connection
+from flask_minify import Minify
 import secrets
 import datetime
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(16)  # Stronger secret key
+app.secret_key = secrets.token_hex(16)
+Minify(app=app, html=True, js=True, cssless=True)
 
-# Helper Functions
 def fetch_articles_by_category(category):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -23,11 +24,11 @@ def fetch_articles_by_category(category):
 def home():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM articles ORDER BY id DESC')
-    articles = cursor.fetchall()
+    cursor.execute('SELECT * FROM articles ORDER BY id DESC LIMIT 6')
+    latest_articles = cursor.fetchall()
     cursor.close()
     conn.close()
-    return render_template('index.html', articles=articles)
+    return render_template('index.html', latest_articles=latest_articles)
 
 @app.route('/tech')
 def tech():
@@ -73,18 +74,15 @@ def dashboard():
 def add_article():
     if 'admin_logged_in' not in session:
         return redirect(url_for('admin_login'))
-
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
         category = request.form['category']
         image_url = request.form['image_url']
-
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)', 
-                           (title, content, category, image_url))
+            cursor.execute('INSERT INTO articles (title, content, category, image_url) VALUES (%s, %s, %s, %s)', (title, content, category, image_url))
             conn.commit()
             flash('Article added successfully!', 'success')
         except Exception as e:
@@ -93,9 +91,7 @@ def add_article():
             print(e)
         cursor.close()
         conn.close()
-
         return redirect(url_for('dashboard'))
-
     return render_template('add_article.html')
 
 @app.route('/logout')
@@ -112,7 +108,6 @@ def article_detail(article_id):
     article = cursor.fetchone()
     cursor.close()
     conn.close()
-
     if article:
         return render_template('article_detail.html', article=article)
     else:
@@ -145,10 +140,10 @@ def contact():
         return redirect(url_for('contact'))
     return render_template('contact.html')
 
-# Google Search Console Verification Route
 @app.route('/google9edf697d52ec1d5c.html')
 def google_verification():
     return send_from_directory('static', 'google9edf697d52ec1d5c.html')
+
 @app.route('/sitemap.xml')
 def sitemap():
     pages = []
@@ -159,16 +154,24 @@ def sitemap():
     sitemap_xml = render_template('sitemap_template.xml', pages=pages, lastmod=ten_days_ago)
     response = app.response_class(sitemap_xml, mimetype='application/xml')
     return response
+
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+
 @app.route('/ads.txt')
 def ads_txt():
     return open('static/ads.txt').read(), 200, {'Content-Type': 'text/plain'}
 
+@app.route('/search')
+def search():
+    query = request.args.get('q')
+    if query:
+        return render_template('search_results.html', query=query)
+    else:
+        flash('Please enter a search term.', 'warning')
+        return redirect(url_for('home'))
 
-
-# 404 Error Page
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404

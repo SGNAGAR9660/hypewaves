@@ -1,5 +1,15 @@
 {% extends "layout.html" %}
+
 {% block title %}Tech News - Hypewaves{% endblock %}
+
+{% block head %}
+<!-- Specific Meta Tags for Tech Page -->
+<meta property="og:title" content="Latest Tech News - Hypewaves" />
+<meta property="og:description" content="Stay updated with trending technology news and updates at Hypewaves." />
+<meta property="og:image" content="{{ url_for('static', filename='images/tech-thumbnail.jpg') }}" />
+<meta property="og:url" content="https://www.hypewaves.net/tech" />
+<meta property="og:type" content="website" />
+{% endblock %}
 
 {% block content %}
 <h1 class="mb-4 text-center">Tech Zone</h1>
@@ -10,7 +20,8 @@
         {% for article in latest_articles %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                <img src="{{ article[3] or 'https://via.placeholder.com/300x200' }}" class="card-img-top" alt="Image">
+                <img src="{{ article[3] if article[3] else url_for('static', filename='images/tech-thumbnail.png') }}" class="card-img-top" alt="{{ article[1] }}">
+
                 <div class="card-body">
                     <h5 class="card-title">{{ article[1] }}</h5>
                     <p class="card-text">{{ article[2][:100] }}...</p>
@@ -28,7 +39,8 @@
         {% for article in old_articles %}
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <img src="{{ article[3] }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
+                <img src="{{ article[3] if article[3] else url_for('static', filename='images/tech-thumbnail.png') }}" class="card-img-top img-fluid" alt="{{ article[1] }}">
+
                 <div class="card-body">
                     <h6 class="card-title">{{ article[1][:50] }}...</h6>
                     <a href="{{ url_for('article_detail', article_id=article[0]) }}" class="btn btn-sm btn-outline-success">View</a>

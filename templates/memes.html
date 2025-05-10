@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block title %}Trending Memes - Hypewaves{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center mb-5">🔥 Trending Memes</h2>
+    <div class="row">
+      
+      {% for meme in latest_articles %}
+      {% if meme[3] and meme[2] and meme[1] and meme[4] == 'meme' %}
+      <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-light h-100">
+          <img src="{{ meme[3] }}" class="card-img-top" alt="{{ meme[1] }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ meme[1][:50] }}...</h5>
+            <a href="{{ meme[2] }}" target="_blank" class="btn btn-primary mt-3">View Original</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+      
+    </div>
+  </div>
+</section>
+
+{% endblock %}
